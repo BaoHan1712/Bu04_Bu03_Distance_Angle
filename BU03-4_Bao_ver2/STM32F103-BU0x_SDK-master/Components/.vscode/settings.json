@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "config.h": "c",
+        "hal_iic.h": "c"
+    }
+}
