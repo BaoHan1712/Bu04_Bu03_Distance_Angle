@@ -34,11 +34,11 @@
 #define APP_NAME "DSTWR IN STS-SDC v1.0"
 
 /* Inter-ranging delay period, in milliseconds. */
-#define RNG_DELAY_MS 100
+#define RNG_DELAY_MS 120
 
 
 static dwt_config_t config = {
-        5,               /* �ŵ���. Channel number. */
+        9,               /* �ŵ���. Channel number. */
         DWT_PLEN_256,    /* Preamble length. Used in TX only. */
         DWT_PAC8,        /* Preamble acquisition chunk size. Used in RX only. */
         9,               /* Txǰ����. TX preamble code. Used in TX only. */
@@ -50,7 +50,7 @@ static dwt_config_t config = {
         (129 + 8 - 8),   /* ֡�ָ�����ʱ. SFD timeout (preamble length + 1 + SFD length - PAC size). Used in RX only. */
         (DWT_STS_MODE_2 | DWT_STS_MODE_SDC), /* STSģʽ. STS enabled */
         DWT_STS_LEN_64, /* STS����. STS length see allowed values in Enum dwt_sts_lengths_e */
-        DWT_PDOA_M3      /* PDOA mode 3 */
+        DWT_PDOA_M0     /* PDOA mode 3 */
 };
 
 /* Default antenna delay values for 64 MHz PRF. See NOTE 1 below. */

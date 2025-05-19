@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "config.h": "c",
-        "hal_iic.h": "c"
+        "hal_iic.h": "c",
+        "deca_device_api.h": "c"
     }
 }

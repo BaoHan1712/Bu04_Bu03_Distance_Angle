@@ -37,7 +37,7 @@ static void rx_err_cb(const dwt_cb_data_t *cb_data);
 
 
 static dwt_config_t config = {
-    5,               /* Channel number */
+    9,               /* Channel number */
     DWT_PLEN_256,    /* Preamble length - tăng độ dài preamble để tăng độ chính xác */
     DWT_PAC8,        /* Preamble acquisition chunk size */
     9,               /* TX preamble code */
@@ -49,13 +49,15 @@ static dwt_config_t config = {
     (129 + 8 - 8),   /* SFD timeout */
     (DWT_STS_MODE_2 | DWT_STS_MODE_SDC), /* STS mode */
     DWT_STS_LEN_64,  /* STS length */
-    DWT_PDOA_M3      /* PDOA mode 3 */
+    DWT_PDOA_M0      /* PDOA mode 3 */
 };
+
+
 //====== START khai bao them bien cho twr
 int16_t   pdoa_val=0;
 //====== END khai bao them bien cho twr
 /* have some delay after each range (e.g. so LDC can be updated (on ARM eval boards), needs to be slightly less than RNG_DELAY_MS in the initiator example*/
-#define DELAY_MS 80
+#define DELAY_MS 60
 
 /* Default antenna delay values for 64 MHz PRF. See NOTE 1 below. */
 #define TX_ANT_DLY 16336
@@ -198,6 +200,15 @@ int kalman_filter_twr(int new_val)
     return (int)kalman_x_twr;
 }
 
+float ema = 0;
+float alpha = 0.32;  // Giá trị alpha cố định, nhỏ thì mượt hơn
+
+int ema_filter(int new_val) {
+    ema = alpha * new_val + (1.0f - alpha) * ema;
+    return (int)ema;
+}
+
+
 /*! ------------------------------------------------------------------------------------------------------------------
  * @fn ds_twr_sts_sdc_responder()
  *
@@ -214,6 +225,9 @@ int ds_twr_sts_sdc_resp(void)
     int range_ok = 0;
     /* Ӧ. Display application name on LCD. */
     _dbg_printf((unsigned char *)APP_NAME);
+	
+		OLED_ShowStr(0, 0, "HanBao", 2);  
+    OLED_ShowStr(0, 2, "RESP waiting", 2);
 
     /* SPI. Configure SPI rate, DW3000 supports up to 38 MHz */
     port_set_dw_ic_spi_fastrate();
@@ -416,13 +430,14 @@ int ds_twr_sts_sdc_resp(void)
                                 /* Display computed distance on LCD. */
 
 																int filtered_val_twr = kalman_filter_twr(filter_distance);
+																int ema_distance = ema_filter(filtered_val_twr);
                                                              
 //																int filtered_val_pdoa = kalman_filter_pdoa(pdoa_val);
 
 																// Lưu giá trị đã lọc
 //																last_filtered_pdoa = abs(filtered_val_pdoa);
                                                                 
-																last_filtered_twr = abs(filtered_val_twr);
+																last_filtered_twr = abs(ema_distance);
 
 //																char angle_str[32] = {0};
 																char dist_str[32] = {0};

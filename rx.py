@@ -3,7 +3,7 @@ import threading
 import time
 
 # Mở cổng serial (chỉnh COM cho đúng)
-ser = serial.Serial('COM4', 115200, timeout=1)
+ser = serial.Serial('COM12', 115200)
 
 def read_uart_loop():
     """Luồng đọc dữ liệu từ UART"""
