@@ -34,7 +34,7 @@
 #define APP_NAME "DSTWR IN STS-SDC v1.0"
 
 /* Inter-ranging delay period, in milliseconds. */
-#define RNG_DELAY_MS 120
+#define RNG_DELAY_MS 10
 
 
 static dwt_config_t config = {

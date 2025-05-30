@@ -57,7 +57,7 @@ static dwt_config_t config = {
 int16_t   pdoa_val=0;
 //====== END khai bao them bien cho twr
 /* have some delay after each range (e.g. so LDC can be updated (on ARM eval boards), needs to be slightly less than RNG_DELAY_MS in the initiator example*/
-#define DELAY_MS 60
+#define DELAY_MS 10
 
 /* Default antenna delay values for 64 MHz PRF. See NOTE 1 below. */
 #define TX_ANT_DLY 16336
@@ -199,14 +199,16 @@ int kalman_filter_twr(int new_val)
     
     return (int)kalman_x_twr;
 }
+ // alpha tối đa, nhanh nhạy hơn khi thay đổi lớn
 
 float ema = 0;
-float alpha = 0.32;  // Giá trị alpha cố định, nhỏ thì mượt hơn
+float alpha = 0.4;  // Giá trị alpha cố định, nhỏ thì mượt hơn
 
 int ema_filter(int new_val) {
     ema = alpha * new_val + (1.0f - alpha) * ema;
     return (int)ema;
 }
+
 
 
 /*! ------------------------------------------------------------------------------------------------------------------
@@ -256,12 +258,7 @@ int ds_twr_sts_sdc_resp(void)
         while (1)
         { };
     }
-//																uint8_t buf[32];
-//																char dist_str[32]={0};
-//                                sprintf(dist_str, "DIST: %3.2f m", distance);
-//                                _dbg_printf(dist_str);
-//																OLED_ShowStr (0, 0, "Goc ne:", 2);
-//																OLED_ShowStr (0, 2, dist_str, 2);
+
     /* ����DW3000Ƶײ. Configure the TX spectrum parameters (power, PG delay and PG count) */
     dwt_configuretxrf(&txconfig_options);
 
